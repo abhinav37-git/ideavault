@@ -14,44 +14,41 @@ const mongo = connector.MongoDB("MongoDB", {
 
 g.datasource(mongo);
 
-const Project = g
-  .type("Project", {
-    title: g.string(),
-    description: g.string(),
-    image: g.url(),
-    liveSiteUrl: g.url(),
-    githubUrl: g.url(),
-    category: g.string(),
-    // category: g.string().search(),
-    createdBy: g.ref('User'),
-  })
+const Project = g.type("Project", {
+  title: g.string(),
+  description: g.string(),
+  image: g.url(),
+  liveSiteUrl: g.url(),
+  githubUrl: g.url(),
+  category: g.string(),
+  // createdBy: g.ref("User"), // Assuming 'User' is correctly defined elsewhere
+});
   // .collection("addresses");
 
 mongo
   .model("User", {
-    name: g.string().length({min: 2, max: 20}),
+    name: g.string().length({ min: 2, max: 20 }),
     email: g.string().unique(),
     avatarUrl: g.url(),
     description: g.string(),
     githubUrl: g.url().optional(),
     linkedUrl: g.url().optional(),
-    projects: g.ref(Project).list().optional()
-
+    projects: g.ref(Project).list().optional(), // Ensure this is correctly referencing the Project type
   })
   .collection("users");
 
 
-const jwt = auth.JWT({
-  issuer: "grafbase",
-  secret: g.env("NEXTAUTH_SECRET"),
-});
+// const jwt = auth.JWT({
+//   issuer: "grafbase",
+//   secret: g.env("NEXTAUTH_SECRET"),
+// });
 
 export default config({
   graph: g,
 
-  auth: {
-    providers: [jwt],
-    rules: (rules) => rules.private()
-  }
+  // auth: {
+  //   providers: [jwt],
+  //   rules: (rules) => rules.private()
+  // }
 
 })
